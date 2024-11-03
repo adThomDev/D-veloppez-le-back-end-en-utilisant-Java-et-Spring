@@ -1,5 +1,6 @@
 package com.ocr.p3back.controller;
 
+import com.ocr.p3back.model.dto.RentalDTO;
 import com.ocr.p3back.model.entity.Rental;
 import com.ocr.p3back.service.RentalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -20,15 +22,16 @@ public class RentalController {
   }
 
   @GetMapping
-  public List<Rental> getAllRentals() {
-    return rentalService.getAllRentals();
+  public ResponseEntity<List<RentalDTO>> getAllRentals() {
+    List<RentalDTO> rentals = rentalService.getAllRentals();
+    return ResponseEntity.ok(rentals);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Rental> getRentalById(@PathVariable Long id) {
-    Rental rental = rentalService.getRentalById(id);
-    if (rental != null) {
-      return ResponseEntity.ok(rental);
+  public ResponseEntity<RentalDTO> getRentalById(@PathVariable Long id) {
+    RentalDTO rentalDTO = rentalService.getRentalById(id);
+    if (rentalDTO != null) {
+      return ResponseEntity.ok(rentalDTO);
     } else {
       return ResponseEntity.notFound().build();
     }
