@@ -9,6 +9,7 @@ import com.ocr.p3back.service.auth.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
@@ -30,9 +31,22 @@ public class AuthController {
    *
    * @param authRequestDTO le DTO qui contient les informations d'identification (identifiant et mot de passe).
    */
+//  @PostMapping("/login")
+//  public ResponseEntity<AuthResponseDTO> authenticate(@RequestBody AuthRequestDTO authRequestDTO) {
+//    return ResponseEntity.ok(authService.authenticate(authRequestDTO));
+//  }
+
+
   @PostMapping("/login")
-  public ResponseEntity<AuthResponseDTO> authenticate(@RequestBody AuthRequestDTO authRequestDTO) {
-    return ResponseEntity.ok(authService.authenticate(authRequestDTO));
+  public ResponseEntity<?> authenticate(@RequestBody AuthRequestDTO authRequestDTO) {
+    try {
+      AuthResponseDTO responseDTO = authService.authenticate(authRequestDTO);
+      return ResponseEntity.ok(responseDTO);
+//      return ResponseEntity.status(HttpStatus.OK).body(responseDTO); //aussi possible
+    } catch (BadCredentialsException e) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(new ErrorResponse("Invalid credentials"));
+    }
   }
 
 //  @GetMapping("/me")

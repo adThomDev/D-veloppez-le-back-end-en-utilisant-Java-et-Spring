@@ -6,6 +6,7 @@ import com.ocr.p3back.model.entity.UserEntity;
 import com.ocr.p3back.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,17 +26,30 @@ public class AuthService {
   @Autowired
   private AuthenticationManager authenticationManager; // Gestionnaire d'authentification
 
-  // Méthode d'authentification d'un utilisateur existant
-  public AuthResponseDTO authenticate(AuthRequestDTO authRequestDTOdto) {
-    authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(authRequestDTOdto.getEmail(), authRequestDTOdto.getPassword()));
-    // Utilise le gestionnaire d'authentification pour valider les informations d'identification (log/mp) (voir UserDetailsService/loadUserByUsername)
+//  // Méthode d'authentification d'un utilisateur existant
+//  public AuthResponseDTO authenticate(AuthRequestDTO authRequestDTOdto) {
+//    authenticationManager.authenticate(
+//        new UsernamePasswordAuthenticationToken(authRequestDTOdto.getEmail(), authRequestDTOdto.getPassword()));
+//    // Utilise le gestionnaire d'authentification pour valider les informations d'identification (log/mp) (voir UserDetailsService/loadUserByUsername)
+//
+//    final UserEntity userEntity = userService.findUserByEmail(authRequestDTOdto.getEmail());
+//    // Récupère l'utilisateur correspondant à l'e-mail fourni (si on av accé à authenticationManager.authenticate on aurait pu à la place renvoyer direct un UserEntity)
+//
+//    return new AuthResponseDTO(jwtService.generateToken(userEntity.getEmail()));
+//    // Génère un JWT pour l'utilisateur authentifié et le renvoie dans une réponse
+//  }
 
-    final UserEntity userEntity = userService.findUserByEmail(authRequestDTOdto.getEmail());
-    // Récupère l'utilisateur correspondant à l'e-mail fourni (si on av accé à authenticationManager.authenticate on aurait pu à la place renvoyer direct un UserEntity)
+  public AuthResponseDTO authenticate(AuthRequestDTO authRequestDTO) {
+    try {
+      authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(
+              authRequestDTO.getEmail(), authRequestDTO.getPassword()));
+    } catch (BadCredentialsException e) {
+      throw new BadCredentialsException("Invalid credentials", e);
+    }
 
+    UserEntity userEntity = userService.findUserByEmail(authRequestDTO.getEmail());
     return new AuthResponseDTO(jwtService.generateToken(userEntity.getEmail()));
-    // Génère un JWT pour l'utilisateur authentifié et le renvoie dans une réponse
   }
 
   //  public AuthResponseDTO register(RegisterRequestDTO dto) {
