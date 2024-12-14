@@ -1,18 +1,19 @@
 package com.ocr.p3back.controller;
 
-
+import com.ocr.p3back.model.dto.UserDTO;
 import com.ocr.p3back.model.dto.auth.AuthRequestDTO;
 import com.ocr.p3back.model.dto.auth.AuthResponseDTO;
-import com.ocr.p3back.model.entity.ErrorResponse;
+import com.ocr.p3back.model.ErrorResponse;
+import com.ocr.p3back.model.entity.UserEntity;
+import com.ocr.p3back.service.UserService;
 import com.ocr.p3back.service.auth.AuthService;
 import com.ocr.p3back.service.auth.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
-
-import javax.naming.AuthenticationException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -25,16 +26,8 @@ public class AuthController {
   @Autowired
   private JwtService jwtService;
 
-  /**
-   * Reçoit identifiant et mot de passe et vérifie leur validité. Renvoie un DTO contenant un message disant si
-   * l'authentification est valide ou non.
-   *
-   * @param authRequestDTO le DTO qui contient les informations d'identification (identifiant et mot de passe).
-   */
-//  @PostMapping("/login")
-//  public ResponseEntity<AuthResponseDTO> authenticate(@RequestBody AuthRequestDTO authRequestDTO) {
-//    return ResponseEntity.ok(authService.authenticate(authRequestDTO));
-//  }
+  @Autowired
+  private UserService userService;
 
 
   @PostMapping("/login")
@@ -49,31 +42,33 @@ public class AuthController {
     }
   }
 
-//  @GetMapping("/me")
-//  public ResponseEntity<?> getMe(@RequestHeader("Authorization") String authorizationHeader) {
-//    try {
-//      Long userIdFromToken = getUserIdFromAuthorizationHeader(authorizationHeader);
-//      UserInfoResponse userEntity = verifyAndGetUserByTokenId(userIdFromToken);
-//
-//      return ResponseEntity.status(HttpStatus.OK).body(userEntity);
-//    } catch (ApiException ex) {
-//      return GlobalExceptionHandler.handleApiException(ex);
-//    }
-//  }
-//
-//  private Long getUserIdFromAuthorizationHeader(String authorizationHeader) {
-//    String jwtToken = JwtUtil.extractJwtFromHeader(authorizationHeader);
-//
-//    // Extract user ID from JWT
-//    Optional<Long> optionalUserIdFromToken = JwtUtil.extractUserId(jwtToken);
-//
-//    Boolean hasJwtExtractionError = optionalUserIdFromToken.isEmpty();
-//    if (hasJwtExtractionError) {
-//      GlobalExceptionHandler.handleLogicError("Unauthorized", HttpStatus.UNAUTHORIZED);
-//    }
-//
-//    return optionalUserIdFromToken.get();
-//  }
+  @GetMapping("/me")
+  public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
+    final String authHeader = request.getHeader("Authorization");
+
+    try {
+      String token = authHeader.replace("Bearer ", "");
+      String email = jwtService.getClaims(token).getSubject();
+      UserEntity user = userService.findUserByEmail(email);
+
+      if (user != null) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setCreatedAt(user.getCreatedAt());
+        userDTO.setUpdatedAt(user.getUpdatedAt());
+
+        return ResponseEntity.ok(userDTO);
+      } else {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(new ErrorResponse("User not found"));
+      }
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(new ErrorResponse("Invalid token"));
+    }
+  }
 
   //pour l'enregistrement de compte :
 //  @PostMapping("/register")

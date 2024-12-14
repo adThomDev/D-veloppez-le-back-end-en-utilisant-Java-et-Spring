@@ -34,12 +34,12 @@ public class JwtService {
 
   public String generateToken(String username) {
     // Méthode pour générer un JWT
-
     UserEntity utilisateur = utilisateurRepository.findByEmail(username).orElseThrow();
     // Récupère les informations de l'utilisateur à partir du repository
-
     Map<String, Object> claims = new HashMap<String, Object>();
     claims.put("role", utilisateur.getClass().getSimpleName());
+    //TODO enlever
+
     // Crée des revendications (claims) personnalisées pour le JWT, telles que le rôle de l'utilisateur
 
     return Jwts.builder()
@@ -57,5 +57,10 @@ public class JwtService {
     return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody();
     // Utilise la clé secrète pour vérifier et extraire les revendications du JWT
   }
-}
 
+  public String extractUsername(String token) {
+    // Méthode pour extraire le nom d'utilisateur des revendications du JWT
+    Claims claims = getClaims(token);
+    return claims.getSubject();
+  }
+}

@@ -1,4 +1,4 @@
-package com.ocr.p3back.model.entity;
+package com.ocr.p3back.model;
 
 public class ErrorResponse {
   private String message;

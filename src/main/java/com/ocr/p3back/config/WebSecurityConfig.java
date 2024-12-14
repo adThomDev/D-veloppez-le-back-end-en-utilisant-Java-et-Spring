@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -35,41 +36,26 @@ public class WebSecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+
+//    jwtAuthFilter.setExcludePaths(Arrays.asList("/api/auth/login"));
+
     return httpSecurity
-        .csrf(csrf -> csrf.disable()) //à commenter pour activer la defense contre le CSRF (NB : mettre aussi ds les form POST une clé csrf (après balise form))
-//        .formLogin(form -> form
-//            //l'url de login, et les url en cas d'identification réussie ou échouée :
-//            .loginPage("/login").defaultSuccessUrl("/index").failureUrl("/login?error=true")
-//            .permitAll()
-//        )
-//        .logout(logout-> logout
-//            .logoutUrl("/logout") //l'url de déconnexion
-//            .permitAll()
-//        )
+        .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            //nb: "/webjars/**" pr que le webjar puisse installer les dépendances (eg bootstrap. voir ds fragments (méthode diff de cdn))
-//            .requestMatchers("api/auth/login","/login","/inscription","/webjars/**","/css/**", "/script/**", "/img/**").permitAll()
-            //pour permettre à un visiteur de s'identifier en utilisant le formulaire :
             .requestMatchers(HttpMethod.POST,("/api/auth/login")).permitAll()
-            //accès des différents rôles utilisateurs :
-//            .requestMatchers("/index").hasAnyAuthority("Superviseur","Professeur","Administrateur")
-//            .requestMatchers("/api/**","/etablissement/**","/professeur/**","/session/**").hasAuthority("Administrateur")
-//            .requestMatchers("/superviseur/**").hasAnyAuthority("Superviseur","Administrateur")
-//            .requestMatchers("/jure/**").hasAnyAuthority("Professeur","Administrateur")
+            .requestMatchers("/pictures/**").permitAll()
+            .requestMatchers("/images/**").permitAll()
             .anyRequest().authenticated()
-//                .anyRequest().permitAll()
         )
-        .sessionManagement((httpSecurity1)-> httpSecurity1.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-        //pour l'identification par JWT (à utiliser avec loginfetch.js), si e.g. version mobile (donc avec API) :
-//        .authenticationProvider(authenticationProvider())
-//        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-
+        .sessionManagement((session)-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+        .authenticationProvider(authenticationProvider())
         .build();
   }
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+
     return config.getAuthenticationManager(); // Configure le gestionnaire d'authentification
   }
 
@@ -78,13 +64,8 @@ public class WebSecurityConfig {
     final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
     authenticationProvider.setUserDetailsService(userDetailsService);
     authenticationProvider.setPasswordEncoder(getEncoder());
+
     return authenticationProvider; // Configure le fournisseur d'authentification pour l'application
   }
 
 }
-
-//  @Bean
-//  public WebSecurityCustomizer webSecurityCustomizer() {
-//    return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
-//    // Permet d'accéder à la console H2 sans authentification (utile pour le développement)
-//  }
