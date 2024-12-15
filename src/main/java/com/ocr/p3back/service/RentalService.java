@@ -6,45 +6,86 @@ import com.ocr.p3back.model.entity.Rental;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class RentalService {
-  private final RentalRepository rentalRepository;
-
   @Autowired
-  public RentalService(RentalRepository rentalRepository) {
-    this.rentalRepository = rentalRepository;
-  }
+  private RentalRepository rentalRepository;
+//  private final RentalRepository rentalRepository;
+//
+//  @Autowired
+//  public RentalService(RentalRepository rentalRepository) {
+//    this.rentalRepository = rentalRepository;
+//  }
 
-  public List<RentalDTO> getAllRentals() {
+  //TODO utilité ?
+//  @Value("${image.upload.dir:/images}")
+//  private String imageUploadDir;
+
+  public Map<String, List<RentalDTO>> getAllRentals() {
     List<Rental> rentals = rentalRepository.findAll();
-    return rentals.stream()
+    List<RentalDTO> rentalDTOs = rentals.stream()
         .map(rental -> {
           RentalDTO dto = new RentalDTO();
           dto.setId(rental.getId());
           dto.setName(rental.getName());
           dto.setSurface(rental.getSurface());
           dto.setPrice(rental.getPrice());
-          dto.setPicture(rental.getPicture());
           dto.setDescription(rental.getDescription());
           dto.setOwnerId(rental.getOwner().getId());
+          //TODO : utiliser une constante pour la base url
+          String picturePath = "http://localhost:3001/pictures/" + rental.getPicture();
+          dto.setPicture(picturePath);
+
           return dto;
         })
         .collect(Collectors.toList());
+
+    Map<String, List<RentalDTO>> rentalsMap = new HashMap<>();
+    rentalsMap.put("rentals", rentalDTOs);
+    return rentalsMap;
   }
 
-  public RentalDTO getRentalById(Long id) {
-    Rental rental = rentalRepository.findById(id).orElseThrow(() -> new RuntimeException("Rental not found"));
-    RentalDTO rentalDTO = new RentalDTO();
-    rentalDTO.setId(rental.getId());
-    rentalDTO.setName(rental.getName());
-    rentalDTO.setSurface(rental.getSurface());
-    rentalDTO.setPrice(rental.getPrice());
-    rentalDTO.setPicture(rental.getPicture());
-    rentalDTO.setDescription(rental.getDescription());
-    rentalDTO.setOwnerId(rental.getOwner().getId());
-    return rentalDTO;
+  public RentalDTO getRentalDTOById(Long id) {
+    Rental rental = rentalRepository.findById(id).orElse(null);
+    if (rental != null) {
+      return convertToDTO(rental);
+    }
+    return null;
   }
+
+  private RentalDTO convertToDTO(Rental rental) {
+    RentalDTO dto = new RentalDTO();
+    dto.setId(rental.getId());
+    dto.setName(rental.getName());
+    dto.setSurface(rental.getSurface());
+    dto.setPrice(rental.getPrice());
+    dto.setDescription(rental.getDescription());
+    dto.setOwnerId(rental.getOwner().getId());
+
+    // Update the picture field to include the full path
+    String picturePath = "http://localhost:3001/pictures/" + rental.getPicture();
+    dto.setPicture(picturePath);
+
+    return dto;
+  }
+
+  public Rental createRental(Rental rental) {
+//    rental.setCreatedAt(new Date());
+//    rental.setUpdatedAt(new Date());
+    return rentalRepository.save(rental);
+  }
+
+  public Rental findById(Long id) {
+    return rentalRepository.findById(id).orElse(null);
+  }
+
+  public Rental updateRental(Rental rental) {
+    return rentalRepository.save(rental);
+  }
+
 }
