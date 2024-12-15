@@ -13,7 +13,7 @@ public class Message {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
-  private User user;
+  private UserEntity userEntity;
 
   @ManyToOne
   @JoinColumn(name = "rental_id")
@@ -36,12 +36,12 @@ public class Message {
     this.id = id;
   }
 
-  public User getUser() {
-    return user;
+  public UserEntity getUser() {
+    return userEntity;
   }
 
-  public void setUser(User user) {
-    this.user = user;
+  public void setUser(UserEntity userEntity) {
+    this.userEntity = userEntity;
   }
 
   public Rental getRental() {

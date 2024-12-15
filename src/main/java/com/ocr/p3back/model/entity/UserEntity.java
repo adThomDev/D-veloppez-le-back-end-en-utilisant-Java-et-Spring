@@ -5,29 +5,29 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "user")
+public class UserEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
   private Long id;
 
-  @Column(name = "email", length = 255)
+  @Column(name = "email", length = 255, unique = true, nullable = false)
   private String email;
 
-  @Column(name = "name", length = 255)
+  @Column(name = "name", length = 255, nullable = false)
   private String name;
 
-  @Column(name = "password", length = 255)
+  @Column(name = "password", length = 255, nullable = false)
   private String password;
 
   @OneToMany(mappedBy = "owner")
   private List<Rental> rentals;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "userEntity")
   private List<Message> messages;
 
-  @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+  @Column(updatable = false, name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
   private LocalDateTime createdAt;
 
   @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT '0000-00-00 00:00:00'")

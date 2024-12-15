@@ -29,7 +29,7 @@ public class Rental {
 
   @ManyToOne
   @JoinColumn(name = "owner_id")
-  private User owner;
+  private UserEntity owner;
 
   @OneToMany(mappedBy = "rental")
   private List<Message> messages;
@@ -88,11 +88,11 @@ public class Rental {
     this.description = description;
   }
 
-  public User getOwner() {
+  public UserEntity getOwner() {
     return owner;
   }
 
-  public void setOwner(User owner) {
+  public void setOwner(UserEntity owner) {
     this.owner = owner;
   }
 
