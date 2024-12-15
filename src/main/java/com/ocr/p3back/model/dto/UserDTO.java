@@ -1,16 +1,14 @@
 package com.ocr.p3back.model.dto;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class UserDTO {
   private Long id;
   private String name;
   private String email;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
+  private Date createdAt;
+  private Date updatedAt;
 
-  // Getters and Setters
   public Long getId() {
     return id;
   }
@@ -35,19 +33,19 @@ public class UserDTO {
     this.email = email;
   }
 
-  public LocalDateTime getCreatedAt() {
+  public Date getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
+  public void setCreatedAt(Date createdAt) {
     this.createdAt = createdAt;
   }
 
-  public LocalDateTime getUpdatedAt() {
+  public Date getUpdatedAt() {
     return updatedAt;
   }
 
-  public void setUpdatedAt(LocalDateTime updatedAt) {
+  public void setUpdatedAt(Date updatedAt) {
     this.updatedAt = updatedAt;
   }
 }

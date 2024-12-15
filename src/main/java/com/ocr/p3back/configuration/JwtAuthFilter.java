@@ -16,17 +16,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
   @Autowired
-  private JwtService jwtService; // Service pour la gestion des JWT
+  private JwtService jwtService;
 
   @Autowired
-  private UserDetailsService userDetailsService; // Service pour la gestion des détails des utilisateurs
+  private UserDetailsService userDetailsService;
 
+  //TODO est ce que ça va marcher pour l'upload d'images ? (voir dans l'app.properties le "static")
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
     return request.getRequestURI().equals("/pictures")
@@ -36,35 +38,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-
     final String authHeader = request.getHeader("Authorization");
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
       filterChain.doFilter(request, response);
       return;
     }
-
     if (SecurityContextHolder.getContext().getAuthentication() == null) {
-      // Vérifie si l'utilisateur n'est pas déjà authentifié
-      if (authHeader != null && authHeader.startsWith("Bearer ")) {
-        // Récupère l'en-tête "Authorization" et vérifie s'il commence par "Bearer"
-        final String token = authHeader.substring(7); // Extrait le token JWT en retirant "Bearer "
-        final Claims claims = jwtService.getClaims(token); // Analyse le JWT pour obtenir ses revendications
-        if (claims.getExpiration().after(new Date())) {
-          // Vérifie si le JWT n'a pas expiré en comparant avec la date actuelle
-          final String username = claims.getSubject(); // Récupère le nom d'utilisateur à partir du JWT
-          final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-          // Charge les détails de l'utilisateur à partir du service UserDetailsService
-          final UsernamePasswordAuthenticationToken authToken =
-              new UsernamePasswordAuthenticationToken(
-                  userDetails, null, userDetails.getAuthorities());
-          // Crée un objet d'authentification UsernamePasswordAuthenticationToken
-          authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-          // Ajoute les détails de l'authentification basés sur la requête
-          SecurityContextHolder.getContext().setAuthentication(authToken);
-          // Définit l'authentification dans le contexte de sécurité
-        }
+      final String token = authHeader.substring(7);
+      final Claims claims = jwtService.getClaims(token);
+      if (claims.getExpiration().after(new Date())) {
+        final String username = claims.getSubject();
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        final UsernamePasswordAuthenticationToken authToken =
+            new UsernamePasswordAuthenticationToken(userDetails, null, Collections.emptyList());
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
       }
     }
-    filterChain.doFilter(request, response); // Poursuit la chaîne de filtres de sécurité
+    filterChain.doFilter(request, response);
   }
 }

@@ -1,7 +1,8 @@
 package com.ocr.p3back.model.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -28,10 +29,10 @@ public class UserEntity {
   private List<Message> messages;
 
   @Column(updatable = false, name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-  private LocalDateTime createdAt;
+  private Timestamp createdAt;
 
   @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT '0000-00-00 00:00:00'")
-  private LocalDateTime updatedAt;
+  private Timestamp updatedAt;
 
   public Long getId() {
     return id;
@@ -81,19 +82,19 @@ public class UserEntity {
     this.messages = messages;
   }
 
-  public LocalDateTime getCreatedAt() {
+  public Timestamp getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
+  public void setCreatedAt(Timestamp createdAt) {
     this.createdAt = createdAt;
   }
 
-  public LocalDateTime getUpdatedAt() {
+  public Timestamp getUpdatedAt() {
     return updatedAt;
   }
 
-  public void setUpdatedAt(LocalDateTime updatedAt) {
+  public void setUpdatedAt(Timestamp updatedAt) {
     this.updatedAt = updatedAt;
   }
 }

@@ -25,10 +25,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SpringSecurityConfig {
   @Autowired
-  private UserDetailsService userDetailsService; // Service pour gérer les détails des utilisateurs
+  private UserDetailsService userDetailsService;
 
   @Autowired
-  private JwtAuthFilter jwtAuthFilter; // Filtre d'authentification basé sur JWT
+  private JwtAuthFilter jwtAuthFilter;
 
   @Bean
   public PasswordEncoder getEncoder(){
@@ -38,12 +38,11 @@ public class SpringSecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-//    jwtAuthFilter.setExcludePaths(Arrays.asList("/api/auth/login"));
-
     return httpSecurity
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.POST,("/api/auth/login")).permitAll()
+//            TODO essayer .authenticated() :
             .requestMatchers("/pictures/**").permitAll()
             .anyRequest().authenticated()
         )
@@ -56,16 +55,15 @@ public class SpringSecurityConfig {
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 
-    return config.getAuthenticationManager(); // Configure le gestionnaire d'authentification
+    return config.getAuthenticationManager();
   }
 
-  //pour l'authentification par JWT :
   private AuthenticationProvider authenticationProvider() {
     final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
     authenticationProvider.setUserDetailsService(userDetailsService);
     authenticationProvider.setPasswordEncoder(getEncoder());
 
-    return authenticationProvider; // Configure le fournisseur d'authentification pour l'application
+    return authenticationProvider;
   }
 
 }
