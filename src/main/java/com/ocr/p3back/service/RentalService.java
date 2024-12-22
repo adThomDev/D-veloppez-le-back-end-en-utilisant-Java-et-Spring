@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -62,18 +63,22 @@ public class RentalService {
   }
 
   private RentalDTO convertToDTO(Rental rental) {
-    RentalDTO dto = new RentalDTO();
-    dto.setId(rental.getId());
-    dto.setName(rental.getName());
-    dto.setSurface(rental.getSurface());
-    dto.setPrice(rental.getPrice());
-    dto.setDescription(rental.getDescription());
-    dto.setOwnerId(rental.getOwner().getId());
+    RentalDTO rentalDTO = new RentalDTO();
+    rentalDTO.setId(rental.getId());
+    rentalDTO.setName(rental.getName());
+    rentalDTO.setSurface(rental.getSurface());
+    rentalDTO.setPrice(rental.getPrice());
+    rentalDTO.setDescription(rental.getDescription());
+    rentalDTO.setOwnerId(rental.getOwner().getId());
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+    rentalDTO.setCreated_at(dateFormat.format(rental.getCreatedAt()));
+    rentalDTO.setUpdated_at(dateFormat.format(rental.getUpdatedAt()));
 
     String picturePath = "http://localhost:3001/pictures/" + rental.getPicture();
-    dto.setPicture(picturePath);
+    rentalDTO.setPicture(picturePath);
 
-    return dto;
+    return rentalDTO;
   }
 
 

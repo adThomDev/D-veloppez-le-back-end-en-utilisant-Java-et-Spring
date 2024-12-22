@@ -52,6 +52,7 @@ public class RentalController {
     }
   }
 
+  //TODO : mettre la logic dans le service
   @PostMapping
   public ResponseEntity<?> createRental(
       @RequestParam(required = true) String name,
@@ -93,6 +94,7 @@ public class RentalController {
     return ResponseEntity.ok().body(Collections.singletonMap("message", "Rental created !"));
   }
 
+  //TODO : mettre la logic dans le service
   @PutMapping("/{id}")
   public ResponseEntity<?> updateRental(
       @PathVariable Long id,
