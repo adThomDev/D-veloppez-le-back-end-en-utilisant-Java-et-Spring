@@ -3,9 +3,14 @@ package com.ocr.p3back.service;
 import com.ocr.p3back.dao.RentalRepository;
 import com.ocr.p3back.model.dto.RentalDTO;
 import com.ocr.p3back.model.entity.Rental;
+import com.ocr.p3back.model.entity.UserEntity;
+import com.ocr.p3back.service.auth.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +20,10 @@ import java.util.stream.Collectors;
 public class RentalService {
   @Autowired
   private RentalRepository rentalRepository;
-//  private final RentalRepository rentalRepository;
-//
-//  @Autowired
-//  public RentalService(RentalRepository rentalRepository) {
-//    this.rentalRepository = rentalRepository;
-//  }
+  @Autowired
+  private UserService userService;
+  @Autowired
+  private JwtService jwtService;
 
   //TODO utilité ?
 //  @Value("${image.upload.dir:/images}")
@@ -67,20 +70,55 @@ public class RentalService {
     dto.setDescription(rental.getDescription());
     dto.setOwnerId(rental.getOwner().getId());
 
-    // Update the picture field to include the full path
     String picturePath = "http://localhost:3001/pictures/" + rental.getPicture();
     dto.setPicture(picturePath);
 
     return dto;
   }
 
+
   public Rental createRental(Rental rental) {
-//    rental.setCreatedAt(new Date());
-//    rental.setUpdatedAt(new Date());
     return rentalRepository.save(rental);
   }
 
-  public Rental findById(Long id) {
+//  public Rental createRental(
+//      String name,
+//      Long surface,
+//      Long price,
+//      String description,
+//      MultipartFile picture,
+//      String token) {
+//
+//    String username = jwtService.extractUsername(token.substring(7));
+//    UserEntity owner = userService.findUserByEmail(username);
+//
+//    if (owner == null) {
+//      throw new UnauthorizedException("Unauthorized");
+//    }
+//
+//    Rental rental = new Rental();
+//    rental.setName(name);
+//    rental.setSurface(surface);
+//    rental.setPrice(price);
+//    rental.setDescription(description);
+//    rental.setOwner(owner);
+//    rental.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+//    rental.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+//
+//    if (picture != null && !picture.isEmpty()) {
+//      String picturePath = "./pictures/" + picture.getOriginalFilename();
+//      try {
+//        Files.write(Paths.get(picturePath), picture.getBytes());
+//        rental.setPicture(picture.getOriginalFilename());
+//      } catch (IOException e) {
+//        throw new InternalServerErrorException("Error saving picture");
+//      }
+//    }
+//
+//    return rentalRepository.save(rental);
+//  }
+
+  public Rental findRentalById(Long id) {
     return rentalRepository.findById(id).orElse(null);
   }
 

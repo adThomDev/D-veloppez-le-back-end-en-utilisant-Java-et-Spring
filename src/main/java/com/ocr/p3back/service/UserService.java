@@ -18,15 +18,17 @@ import java.util.Objects;
 
 @Service
 public class UserService {
-
   @Autowired
   private UserRepository repository;
-
   @Autowired
   private JwtService jwtService;
 
   public UserEntity findUserByEmail(String email) {
     return repository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found: " + email));
+  }
+
+  public UserEntity findUserById(Long id) {
+    return repository.findById(id).orElseThrow(() -> new NotFoundException("User not found: " + id));
   }
 
   public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
@@ -57,6 +59,7 @@ public class UserService {
   }
 
 //  TODO : enlever ?
+
   /**
    * Vérifie que l'adresses e-mail pour un utilisateur n'existe pas déjà dans la BDD.
    *

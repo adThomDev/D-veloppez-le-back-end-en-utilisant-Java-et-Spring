@@ -15,12 +15,12 @@ public class MessageController {
 
   private final MessageService messageService;
 
-  @PostMapping("/")
-  public ResponseEntity<?> sendMessage(@RequestBody Map<String, Object> payload) {
-    Long rentalId = ((Number) payload.get("rental_id")).longValue();
-    Long userId = ((Number) payload.get("user_id")).longValue();
-    String messageContent = (String) payload.get("message");
-
-    return messageService.postMessage(rentalId, userId, messageContent);
-  }
+//  @PostMapping("/")
+//  public ResponseEntity<?> sendMessage(@RequestBody Map<String, Object> payload) {
+//    Long rentalId = ((Number) payload.get("rental_id")).longValue();
+//    Long userId = ((Number) payload.get("user_id")).longValue();
+//    String messageContent = (String) payload.get("message");
+//
+//    return messageService.postMessage(rentalId, userId, messageContent);
+//  }
 }

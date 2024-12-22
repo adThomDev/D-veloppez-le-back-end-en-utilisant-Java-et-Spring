@@ -28,7 +28,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
   @Autowired
   private UserDetailsService userDetailsService;
 
-  //TODO est ce que ça va marcher pour l'upload d'images ? (voir dans l'app.properties le "static")
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
     return request.getRequestURI().equals("/pictures")
