@@ -1,6 +1,7 @@
 package com.ocr.p3back.service;
 
 import com.ocr.p3back.dao.MessageRepository;
+import com.ocr.p3back.model.MessageResponse;
 import com.ocr.p3back.model.entity.Message;
 import com.ocr.p3back.model.entity.Rental;
 import com.ocr.p3back.model.entity.UserEntity;
@@ -40,9 +41,11 @@ public class MessageService {
       message.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
       messageRepository.save(message);
 
-      Map<String, String> response = new HashMap<>();
-      response.put("message", "Message sent with success");
-      return new ResponseEntity<>(response, HttpStatus.OK);
+//      Map<String, String> response = new HashMap<>();
+//      response.put("message", "Message sent with success");
+      MessageResponse messageResponse = new MessageResponse();
+      messageResponse.setMessage("Message sent with success");
+      return new ResponseEntity<>(messageResponse, HttpStatus.OK);
 
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
