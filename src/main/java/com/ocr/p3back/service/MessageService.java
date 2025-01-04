@@ -1,7 +1,7 @@
 package com.ocr.p3back.service;
 
 import com.ocr.p3back.dao.MessageRepository;
-import com.ocr.p3back.model.MessageResponse;
+import com.ocr.p3back.model.dto.message.MessageResponse;
 import com.ocr.p3back.model.entity.Message;
 import com.ocr.p3back.model.entity.Rental;
 import com.ocr.p3back.model.entity.UserEntity;
@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class MessageService {
@@ -40,14 +38,11 @@ public class MessageService {
       message.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
       message.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
       messageRepository.save(message);
+      MessageResponse messageResponse = new MessageResponse("Message sent with success");
 
-//      Map<String, String> response = new HashMap<>();
-//      response.put("message", "Message sent with success");
-      MessageResponse messageResponse = new MessageResponse();
-      messageResponse.setMessage("Message sent with success");
       return new ResponseEntity<>(messageResponse, HttpStatus.OK);
-
     } catch (Exception e) {
+
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
