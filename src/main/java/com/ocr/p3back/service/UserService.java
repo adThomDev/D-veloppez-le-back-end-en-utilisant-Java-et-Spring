@@ -1,11 +1,11 @@
 package com.ocr.p3back.service;
 
+import com.ocr.p3back.dao.UserRepository;
 import com.ocr.p3back.exception.auth.DuplicationException;
 import com.ocr.p3back.exception.auth.NotFoundException;
 import com.ocr.p3back.model.ErrorResponse;
 import com.ocr.p3back.model.dto.UserDTO;
 import com.ocr.p3back.model.entity.UserEntity;
-import com.ocr.p3back.dao.UserRepository;
 import com.ocr.p3back.service.auth.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 @Service
@@ -44,11 +44,13 @@ public class UserService {
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
-        userDTO.setCreatedAt(new Date(user.getCreatedAt().getTime()));
-        userDTO.setUpdatedAt(new Date(user.getUpdatedAt().getTime()));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        userDTO.setCreated_at(dateFormat.format(user.getCreatedAt()));
+        userDTO.setUpdated_at(dateFormat.format(user.getUpdatedAt()));
 
-        return ResponseEntity.ok(userDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(userDTO);
       } else {
+        //TODO : copier mockoon
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
             .body(new ErrorResponse("User not found"));
       }
@@ -69,7 +71,7 @@ public class UserService {
   private void checkEmailDuplication(UserEntity utilisateur) {
     final String email = utilisateur.getEmail();
 
-    if (email != null && email.length() > 0) {
+    if (email != null && !email.isEmpty()) {
       final Long id = utilisateur.getId();
       final UserEntity util2 = repository.findByEmail(email).orElse(null);
 

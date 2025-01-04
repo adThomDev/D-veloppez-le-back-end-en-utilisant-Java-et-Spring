@@ -5,6 +5,7 @@ import com.ocr.p3back.model.dto.auth.AuthResponseDTO;
 import com.ocr.p3back.model.entity.UserEntity;
 import com.ocr.p3back.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -35,9 +36,9 @@ public class AuthService {
     } catch (BadCredentialsException e) {
       throw new BadCredentialsException("Invalid credentials", e);
     }
-
     UserEntity userEntity = userService.findUserByEmail(authRequestDTO.getEmail());
-    return ResponseEntity.ok(new AuthResponseDTO(jwtService.generateToken(userEntity.getEmail())));
+
+    return ResponseEntity.status(HttpStatus.OK).body(new AuthResponseDTO(jwtService.generateToken(userEntity.getEmail())));
   }
 }
 

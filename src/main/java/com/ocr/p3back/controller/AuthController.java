@@ -73,6 +73,7 @@ public class AuthController {
       security = {@SecurityRequirement(name = "bearerAuth")}
   )
   public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
+    //TODO : remettre les return ResponseEntity.status... ici ?
 
     return userService.getCurrentUser(request);
   }

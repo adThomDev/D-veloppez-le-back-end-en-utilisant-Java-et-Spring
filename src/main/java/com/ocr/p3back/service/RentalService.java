@@ -61,11 +61,9 @@ public class RentalService {
     rentalDTO.setPrice(rental.getPrice());
     rentalDTO.setDescription(rental.getDescription());
     rentalDTO.setOwnerId(rental.getOwner().getId());
-
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
     rentalDTO.setCreated_at(dateFormat.format(rental.getCreatedAt()));
     rentalDTO.setUpdated_at(dateFormat.format(rental.getUpdatedAt()));
-
     String picturePath = "http://localhost:3001/pictures/" + rental.getPicture();
     rentalDTO.setPicture(picturePath);
 
