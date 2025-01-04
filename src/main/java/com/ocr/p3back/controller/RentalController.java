@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +30,14 @@ import java.time.LocalDateTime;
 @CrossOrigin
 @RestController
 @RequestMapping("/api/rentals")
-@RequiredArgsConstructor
 public class RentalController {
 
-  private final RentalService rentalService;
-  private final UserService userService;
-  private final JwtService jwtService;
+  @Autowired
+  private RentalService rentalService;
+  @Autowired
+  private UserService userService;
+  @Autowired
+  private JwtService jwtService;
 
   @GetMapping
   @Operation(description = "Get all rentals", responses = {

@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,11 +22,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin
-@RequiredArgsConstructor
 public class AuthController {
 
-  private final AuthService authService;
-  private final UserService userService;
+  @Autowired
+  private AuthService authService;
+  @Autowired
+  private UserService userService;
 
   @PostMapping("/login")
   @Operation(description = "Authenticate a user", responses = {
