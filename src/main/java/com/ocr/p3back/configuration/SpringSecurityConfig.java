@@ -27,7 +27,7 @@ public class SpringSecurityConfig {
   private JwtAuthFilter jwtAuthFilter;
 
   @Bean
-  public PasswordEncoder getEncoder(){
+  public PasswordEncoder getEncoder() {
     return new BCryptPasswordEncoder();
   }
 
@@ -37,15 +37,13 @@ public class SpringSecurityConfig {
     return httpSecurity
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers(HttpMethod.POST,("/api/auth/login")).permitAll()
-                .requestMatchers(HttpMethod.GET,("/swagger-ui/**")).permitAll()
-            .requestMatchers(HttpMethod.GET,("/v3/api-docs/**")).permitAll()
-
-//            TODO essayer .authenticated() pour les pictures :
+            .requestMatchers(HttpMethod.POST, ("/api/auth/login")).permitAll()
+            .requestMatchers(HttpMethod.GET, ("/swagger-ui/**")).permitAll()
+            .requestMatchers(HttpMethod.GET, ("/v3/api-docs/**")).permitAll()
             .requestMatchers("/pictures/**").permitAll()
             .anyRequest().authenticated()
         )
-        .sessionManagement((session)-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
         .authenticationProvider(authenticationProvider())
         .build();

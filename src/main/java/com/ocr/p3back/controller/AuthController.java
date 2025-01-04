@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-  private AuthService authService;
-  private UserService userService;
+  private final AuthService authService;
+  private final UserService userService;
 
   @PostMapping("/login")
   @Operation(description = "Authenticate a user", responses = {
