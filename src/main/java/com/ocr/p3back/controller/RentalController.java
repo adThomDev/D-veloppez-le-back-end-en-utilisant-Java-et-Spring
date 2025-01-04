@@ -42,7 +42,7 @@ public class RentalController {
       @ApiResponse(description = "Success", responseCode = "200", content = @Content(
           mediaType = "application/json",
           schema = @Schema(implementation = RentalsDTO.class),
-          examples = @ExampleObject(value = "{\"rentals\":[{\"id\":1,\"name\":\"Rental 1\",\"surface\":100,\"price\":1000,\"picture\":\"https://example.com/picture1.jpg\",\"description\":\"Description 1\",\"ownerId\":1,\"created_at\":\"2022-01-01\",\"updated_at\":\"2022-01-01\"},{\"id\":2,\"name\":\"Rental 2\",\"surface\":200,\"price\":2000,\"picture\":\"https://example.com/picture2.jpg\",\"description\":\"Description 2\",\"ownerId\":2,\"created_at\":\"2022-01-02\",\"updated_at\":\"2022-01-02\"}]}")
+          examples = @ExampleObject(value = "{\"rentals\":[{\"id\":1,\"name\":\"Rental 1\",\"surface\":100,\"price\":1000,\"picture\":\"https://example.com/picture1.jpg\",\"description\":\"Description 1\",\"ownerId\":1,\"created_at\":\"2024-01-01\",\"updated_at\":\"2024-01-01\"},{\"id\":2,\"name\":\"Rental 2\",\"surface\":200,\"price\":2000,\"picture\":\"https://example.com/picture2.jpg\",\"description\":\"Description 2\",\"ownerId\":2,\"created_at\":\"2024-01-02\",\"updated_at\":\"2024-01-02\"}]}")
       )),
       @ApiResponse(description = "Unauthorized", responseCode = "401", content = {@Content()})
   }, security = {@SecurityRequirement(name = "bearerAuth")})
@@ -57,7 +57,7 @@ public class RentalController {
       @ApiResponse(description = "Success", responseCode = "200", content = @Content(
           mediaType = "application/json",
           schema = @Schema(implementation = RentalDTO.class),
-          examples = @ExampleObject(value = "{\"id\":1,\"name\":\"Rental 1\",\"surface\":100,\"price\":1000,\"picture\":\"https://example.com/picture1.jpg\",\"description\":\"Description 1\",\"ownerId\":1,\"created_at\":\"2022-01-01\",\"updated_at\":\"2022-01-01\"}")
+          examples = @ExampleObject(value = "{\"id\":1,\"name\":\"Rental 1\",\"surface\":100,\"price\":1000,\"picture\":\"https://example.com/picture1.jpg\",\"description\":\"Description 1\",\"ownerId\":1,\"created_at\":\"2024-01-01\",\"updated_at\":\"2024-01-01\"}")
       )),
       @ApiResponse(description = "Unauthorized", responseCode = "401", content = {@Content()})
   }, security = {@SecurityRequirement(name = "bearerAuth")})
