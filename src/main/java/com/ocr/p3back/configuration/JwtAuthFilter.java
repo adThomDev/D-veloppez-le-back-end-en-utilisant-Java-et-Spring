@@ -30,6 +30,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
+
     return request.getRequestURI().equals("/pictures")
         || request.getRequestURI().equals("/api/auth/login");
   }
@@ -40,6 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     final String authHeader = request.getHeader("Authorization");
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
       filterChain.doFilter(request, response);
+
       return;
     }
     if (SecurityContextHolder.getContext().getAuthentication() == null) {

@@ -2,6 +2,7 @@ package com.ocr.p3back.service.auth;
 
 import com.ocr.p3back.model.dto.auth.AuthRequestDTO;
 import com.ocr.p3back.model.dto.auth.AuthResponseDTO;
+import com.ocr.p3back.model.dto.message.MessageResponse;
 import com.ocr.p3back.model.entity.UserEntity;
 import com.ocr.p3back.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class AuthService {
   private UserService userService;
 
   @Autowired
-  private PasswordEncoder passwordEncoder;
+  private PasswordEncoder passwordEncoder; //TODO
 
   @Autowired
   private JwtService jwtService;
@@ -28,17 +29,29 @@ public class AuthService {
   @Autowired
   private AuthenticationManager authenticationManager;
 
+  /**
+   * Verifies login information and provides access or an error message.
+   *
+   * @param authRequestDTO The provided email and password.
+   * @return Upon successful authentication, a token is provided. Otherwise, an error message is returned.
+   */
   public ResponseEntity<?> authenticate(AuthRequestDTO authRequestDTO) {
     try {
       authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(
               authRequestDTO.getEmail(), authRequestDTO.getPassword()));
     } catch (BadCredentialsException e) {
-      throw new BadCredentialsException("Invalid credentials", e);
+
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("error"));
     }
     UserEntity userEntity = userService.findUserByEmail(authRequestDTO.getEmail());
+    AuthResponseDTO authResponseDTO = new AuthResponseDTO(jwtService.generateToken(userEntity.getEmail()));
+    if (userEntity == null || authResponseDTO == null) {
 
-    return ResponseEntity.status(HttpStatus.OK).body(new AuthResponseDTO(jwtService.generateToken(userEntity.getEmail())));
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("error"));
+    }
+
+    return ResponseEntity.status(HttpStatus.OK).body(authResponseDTO);
   }
 }
 

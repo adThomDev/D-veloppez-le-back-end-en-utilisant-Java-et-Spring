@@ -24,10 +24,8 @@ public class RentalController {
 
   @Autowired
   private RentalService rentalService;
-
   @Autowired
   private UserService userService;
-
   @Autowired
   private JwtService jwtService;
 

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-    info = @Info(title = "Your API", version = "1.0")
+    info = @Info(title = "p3back - Développez le back-end en utilisant Java et Spring", version = "1.0")
 )
 @SecuritySchemes({
     @SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT")

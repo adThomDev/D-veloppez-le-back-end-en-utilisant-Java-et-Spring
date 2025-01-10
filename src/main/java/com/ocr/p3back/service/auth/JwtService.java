@@ -2,6 +2,10 @@ package com.ocr.p3back.service.auth;
 
 import com.ocr.p3back.dao.UserRepository;
 import com.ocr.p3back.model.entity.UserEntity;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,36 +15,31 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-
 @Service
 public class JwtService {
 
   @Value("${jwt.secret.key}")
-  private String secretKey; // Clé secrète utilisée pour signer le JWT
+  private String secretKey;
 
   @Value("${jwt.expiration}")
-  private Long expiration; // Durée de validité du JWT (en millisecondes)
+  private Long expiration;
 
   @Autowired
-  private UserRepository utilisateurRepository; // Repository pour accéder aux données des utilisateurs
+  private UserRepository utilisateurRepository;
 
   private SecretKey getKey() {
-    return Keys.hmacShaKeyFor(secretKey.getBytes()); // Obtient la clé secrète au format SecretKey
+    return Keys.hmacShaKeyFor(secretKey.getBytes());
   }
 
+  /**
+   * Generates a JSON Web Token for the given username.
+   *
+   * @param username The username for which the token is generated.
+   * @return A JWT token as a String, or null if the user is not found.
+   */
   public String generateToken(String username) {
-    // Méthode pour générer un JWT
-    UserEntity utilisateur = utilisateurRepository.findByEmail(username).orElseThrow();
-    // Récupère les informations de l'utilisateur à partir du repository
+    UserEntity utilisateur = utilisateurRepository.findByEmail(username).orElse(null);
     Map<String, Object> claims = new HashMap<String, Object>();
-    claims.put("role", utilisateur.getClass().getSimpleName());
-    //TODO enlever
-
-    // Crée des revendications (claims) personnalisées pour le JWT, telles que le rôle de l'utilisateur
 
     return Jwts.builder()
         .setSubject(username)
@@ -48,19 +47,16 @@ public class JwtService {
         .setExpiration(new Date(System.currentTimeMillis() + expiration))
         .signWith(getKey(), SignatureAlgorithm.HS512)
         .compact();
-    // Construit le JWT avec les revendications, la date d'expiration, et le signe avec la clé secrète
   }
 
   public Claims getClaims(String token) {
-    // Méthode pour extraire les revendications d'un JWT
 
     return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody();
-    // Utilise la clé secrète pour vérifier et extraire les revendications du JWT
   }
 
   public String extractUsername(String token) {
-    // Méthode pour extraire le nom d'utilisateur des revendications du JWT
     Claims claims = getClaims(token);
+
     return claims.getSubject();
   }
 }

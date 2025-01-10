@@ -17,12 +17,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   @Autowired
   private UserService userService;
 
+  /**
+   * Loads user details by their username.
+   *
+   * @param username the email (username) of the user to be loaded.
+   * @return A UserDetails object containing the user's username, password, and authorities.
+   * @throws UsernameNotFoundException if the user is not found.
+   */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    try {
-      UserEntity user = userService.findUserByEmail(username);
+    UserEntity user = userService.findUserByEmail(username);
+
+    if (user != null) {
+
       return new User(username, user.getPassword(), Collections.emptyList());
-    } catch (Exception e) {
+    } else {
+      Exception e = new Exception("User not found");
+
       throw new UsernameNotFoundException(e.getMessage());
     }
   }

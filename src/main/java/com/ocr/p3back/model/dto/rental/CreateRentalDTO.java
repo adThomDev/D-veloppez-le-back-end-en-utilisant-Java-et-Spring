@@ -1,4 +1,4 @@
-package com.ocr.p3back.model.dto;
+package com.ocr.p3back.model.dto.rental;
 
 import lombok.Getter;
 import lombok.Setter;

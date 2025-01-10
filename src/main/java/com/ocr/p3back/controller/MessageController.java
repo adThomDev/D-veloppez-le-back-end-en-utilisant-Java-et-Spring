@@ -22,6 +22,12 @@ public class MessageController {
   @Autowired
   private MessageService messageService;
 
+  /**
+   * Sends a message to the rental's owner.
+   *
+   * @param messageRequest The message to be sent
+   * @return ResponseEntity<MessageResponse> The response indicating whether the message was sent successfully or not
+   */
   @PostMapping("")
   @Operation(description = "Sends a message to the rental's owner", responses = {
       @ApiResponse(description = "Success", responseCode = "200", content = @Content(
@@ -45,8 +51,8 @@ public class MessageController {
           )
       )
   )
-  public ResponseEntity<?> sendMessage(@RequestBody MessageRequest messageRequest) {
+  public ResponseEntity<MessageResponse> postMessage(@RequestBody MessageRequest messageRequest) {
 
-    return messageService.postMessage(messageRequest.getRental_id(), messageRequest.getUser_id(), messageRequest.getMessage());
+    return messageService.postMessage(messageRequest);
   }
 }

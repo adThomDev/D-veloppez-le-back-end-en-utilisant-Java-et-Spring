@@ -2,8 +2,6 @@ package com.ocr.p3back.service;
 
 import com.ocr.p3back.dao.UserRepository;
 import com.ocr.p3back.exception.auth.DuplicationException;
-import com.ocr.p3back.exception.auth.NotFoundException;
-import com.ocr.p3back.model.ErrorResponse;
 import com.ocr.p3back.model.dto.UserDTO;
 import com.ocr.p3back.model.entity.UserEntity;
 import com.ocr.p3back.service.auth.JwtService;
@@ -18,20 +16,30 @@ import java.util.Objects;
 
 @Service
 public class UserService {
+
   @Autowired
   private UserRepository repository;
+
   @Autowired
   private JwtService jwtService;
 
   public UserEntity findUserByEmail(String email) {
-    return repository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found: " + email));
+
+    return repository.findByEmail(email).orElse(null);
   }
 
-  public UserEntity findUserById(Long id) {
-    return repository.findById(id).orElseThrow(() -> new NotFoundException("User not found: " + id));
+  public UserEntity findUserById(Long userId) {
+
+    return repository.findById(userId).orElse(null);
   }
 
-  public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
+  /**
+   * Gets the information for the currently logged-in user.
+   *
+   * @param request The data containing the user's JWT.
+   * @return The user's information on success, or a 401.
+   */
+  public ResponseEntity<UserDTO> getCurrentUser(HttpServletRequest request) {
     final String authHeader = request.getHeader("Authorization");
 
     try {
@@ -50,23 +58,22 @@ public class UserService {
 
         return ResponseEntity.status(HttpStatus.OK).body(userDTO);
       } else {
-        //TODO : copier mockoon
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            .body(new ErrorResponse("User not found"));
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
       }
     } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body(new ErrorResponse("Invalid token"));
+
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
   }
 
-//  TODO : enlever ?
+//  TODO : implémenter
 
   /**
-   * Vérifie que l'adresses e-mail pour un utilisateur n'existe pas déjà dans la BDD.
+   * Checks if the email address for a user does not already exist in the database.
    *
-   * @param utilisateur L'utilisateur pour lequel vérifier la duplication d'e-mail.
-   * @throws DuplicationException si une duplication d'e-mail est détectée.
+   * @param utilisateur The user for whom to check for email duplication.
+   * @throws DuplicationException if an email duplication is detected.
    */
   private void checkEmailDuplication(UserEntity utilisateur) {
     final String email = utilisateur.getEmail();

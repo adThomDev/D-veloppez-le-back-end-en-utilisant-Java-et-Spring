@@ -14,9 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,9 +24,16 @@ public class AuthController {
 
   @Autowired
   private AuthService authService;
+
   @Autowired
   private UserService userService;
 
+  /**
+   * Checks login details and gives access if they're correct.
+   *
+   * @param authRequestDTO The email and password used to log in.
+   * @return A JWT if login is successful, or an error if not.
+   */
   @PostMapping("/login")
   @Operation(description = "Authenticate a user", responses = {
       @ApiResponse(description = "Success", responseCode = "200", content = @Content(
@@ -51,16 +56,16 @@ public class AuthController {
       )
   )
   public ResponseEntity<?> authenticate(@RequestBody AuthRequestDTO authRequestDTO) {
-    try {
 
-      return authService.authenticate(authRequestDTO);
-    } catch (BadCredentialsException e) {
-
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body(new ErrorResponse("error"));
-    }
+    return authService.authenticate(authRequestDTO);
   }
 
+  /**
+   * Gets the information for the currently logged-in user.
+   *
+   * @param request The data containing the user's JWT.
+   * @return The user's information on success, or an error if not.
+   */
   @GetMapping("/me")
   @Operation(description = "Get the current user", responses = {
       @ApiResponse(description = "Success", responseCode = "200", content = @Content(
@@ -72,8 +77,7 @@ public class AuthController {
   },
       security = {@SecurityRequirement(name = "bearerAuth")}
   )
-  public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
-    //TODO : remettre les return ResponseEntity.status... ici ?
+  public ResponseEntity<UserDTO> getCurrentUser(HttpServletRequest request) {
 
     return userService.getCurrentUser(request);
   }
