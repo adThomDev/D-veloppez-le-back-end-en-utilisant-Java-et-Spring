@@ -32,7 +32,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
   protected boolean shouldNotFilter(HttpServletRequest request) {
 
     return request.getRequestURI().equals("/pictures")
-        || request.getRequestURI().equals("/api/auth/login");
+        || request.getRequestURI().equals("/api/auth/login")
+        || request.getRequestURI().equals("/api/auth/register");
   }
 
   @Override

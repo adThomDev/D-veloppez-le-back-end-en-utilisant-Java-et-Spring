@@ -1,8 +1,9 @@
 package com.ocr.p3back.service;
 
 import com.ocr.p3back.dao.UserRepository;
-import com.ocr.p3back.exception.auth.DuplicationException;
-import com.ocr.p3back.model.dto.UserDTO;
+import com.ocr.p3back.model.dto.auth.AuthResponseDTO;
+import com.ocr.p3back.model.dto.user.UserDTO;
+import com.ocr.p3back.model.dto.user.UserRegistrationDTO;
 import com.ocr.p3back.model.entity.UserEntity;
 import com.ocr.p3back.service.auth.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,26 +12,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Objects;
+import java.time.LocalDateTime;
 
 @Service
 public class UserService {
 
   @Autowired
-  private UserRepository repository;
+  private UserRepository userRepository;
 
   @Autowired
   private JwtService jwtService;
 
   public UserEntity findUserByEmail(String email) {
 
-    return repository.findByEmail(email).orElse(null);
+    return userRepository.findByEmail(email).orElse(null);
   }
 
   public UserEntity findUserById(Long userId) {
 
-    return repository.findById(userId).orElse(null);
+    return userRepository.findById(userId).orElse(null);
   }
 
   /**
@@ -67,25 +69,32 @@ public class UserService {
     }
   }
 
-//  TODO : implémenter
-
   /**
-   * Checks if the email address for a user does not already exist in the database.
+   * Creates a new user and returns his JWT if successful.
    *
-   * @param utilisateur The user for whom to check for email duplication.
-   * @throws DuplicationException if an email duplication is detected.
+   * @param userRegistrationDTO The user details for registration encapsulated in a UserDTO object.
+   * @return A ResponseEntity containing an AuthResponseDTO with the generated JWT token if the user is successfully created,
+   * or a ResponseEntity with BAD_REQUEST status if the user already exists or if the request data is incomplete.
    */
-  private void checkEmailDuplication(UserEntity utilisateur) {
-    final String email = utilisateur.getEmail();
+  public ResponseEntity<?> createUser(UserRegistrationDTO userRegistrationDTO) {
+    if (findUserByEmail(userRegistrationDTO.getEmail()) != null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
 
-    if (email != null && !email.isEmpty()) {
-      final Long id = utilisateur.getId();
-      final UserEntity util2 = repository.findByEmail(email).orElse(null);
+    if (!userRegistrationDTO.getName().isEmpty() &&
+        !userRegistrationDTO.getEmail().isEmpty() &&
+        !userRegistrationDTO.getPassword().isEmpty()) {
+      UserEntity newUser = new UserEntity();
+      newUser.setName(userRegistrationDTO.getName());
+      newUser.setEmail(userRegistrationDTO.getEmail());
+      newUser.setPassword(userRegistrationDTO.getPassword());
+      newUser.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+      userRepository.save(newUser);
+      AuthResponseDTO authResponseDTO = new AuthResponseDTO(jwtService.generateToken(newUser.getEmail()));
 
-      if (util2 != null && Objects.equals(util2.getEmail(), email) && !Objects.equals(util2.getId(), id)) {
-        throw new DuplicationException("Email duplication: " + email);
-      }
+      return ResponseEntity.status(HttpStatus.OK).body(authResponseDTO);
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
   }
-
 }

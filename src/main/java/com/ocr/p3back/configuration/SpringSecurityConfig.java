@@ -39,6 +39,7 @@ public class SpringSecurityConfig {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.POST, ("/api/auth/login")).permitAll()
+            .requestMatchers(HttpMethod.POST, ("/api/auth/register")).permitAll()
             .requestMatchers(HttpMethod.GET, ("/swagger-ui/**")).permitAll()
             .requestMatchers(HttpMethod.GET, ("/v3/api-docs/**")).permitAll()
             .requestMatchers("/pictures/**").permitAll()

@@ -1,9 +1,10 @@
 package com.ocr.p3back.controller;
 
 import com.ocr.p3back.model.ErrorResponse;
-import com.ocr.p3back.model.dto.UserDTO;
 import com.ocr.p3back.model.dto.auth.AuthRequestDTO;
 import com.ocr.p3back.model.dto.auth.AuthResponseDTO;
+import com.ocr.p3back.model.dto.user.UserDTO;
+import com.ocr.p3back.model.dto.user.UserRegistrationDTO;
 import com.ocr.p3back.service.UserService;
 import com.ocr.p3back.service.auth.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +37,7 @@ public class AuthController {
    */
   @PostMapping("/login")
   @Operation(description = "Authenticate a user", responses = {
-      @ApiResponse(description = "Success", responseCode = "200", content = @Content(
+      @ApiResponse(description = "Login successful", responseCode = "200", content = @Content(
           mediaType = "application/json",
           schema = @Schema(implementation = AuthResponseDTO.class),
           examples = @ExampleObject(value = "{\"token\":\"jwt\"}")
@@ -68,7 +69,7 @@ public class AuthController {
    */
   @GetMapping("/me")
   @Operation(description = "Get the current user", responses = {
-      @ApiResponse(description = "Success", responseCode = "200", content = @Content(
+      @ApiResponse(description = "User info retriaval successful", responseCode = "200", content = @Content(
           mediaType = "application/json",
           schema = @Schema(implementation = UserDTO.class),
           examples = @ExampleObject(value = "{\"id\":1,\"name\":\"Bobby Bob\",\"email\":\"bob@example.com\",\"createdAt\":\"2024-01-01\",\"updatedAt\":\"2024-01-01\"}")
@@ -80,6 +81,34 @@ public class AuthController {
   public ResponseEntity<UserDTO> getCurrentUser(HttpServletRequest request) {
 
     return userService.getCurrentUser(request);
+  }
+
+  /**
+   * Registers a new user.
+   *
+   * @param userDTORequest The user details for registration encapsulated in a UserDTO object.
+   * @return A ResponseEntity containing the new user's JWT if successful, or a 400.
+   */
+  @PostMapping("/register")
+  @Operation(description = "Register a new user", responses = {
+      @ApiResponse(description = "User registeration successful", responseCode = "200", content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = AuthResponseDTO.class),
+          examples = @ExampleObject(value = "{\"token\":\"generated-jwt-token\"}")
+      )),
+      @ApiResponse(description = "Bad request", responseCode = "400")
+  },
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+          description = "Registration request",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = UserRegistrationDTO.class)
+          )
+      )
+  )
+  public ResponseEntity<?> register(@RequestBody UserRegistrationDTO userRegistrationDTO) {
+
+    return userService.createUser(userRegistrationDTO);
   }
 }
 
