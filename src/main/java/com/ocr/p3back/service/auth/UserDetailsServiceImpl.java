@@ -13,9 +13,12 @@ import java.util.Collections;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+  private final UserService userService;
 
   @Autowired
-  private UserService userService;
+  public UserDetailsServiceImpl(UserService userService) {
+    this.userService = userService;
+  }
 
   /**
    * Loads user details by their username.

@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -18,12 +19,18 @@ import java.time.LocalDateTime;
 
 @Service
 public class UserService {
+  private final UserRepository userRepository;
+  private final JwtService jwtService;
+  private final PasswordEncoder passwordEncoder;
 
   @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
-  private JwtService jwtService;
+  public UserService(UserRepository userRepository,
+                     JwtService jwtService,
+                     PasswordEncoder passwordEncoder) {
+    this.userRepository = userRepository;
+    this.jwtService = jwtService;
+    this.passwordEncoder = passwordEncoder;
+  }
 
   public UserEntity findUserByEmail(String email) {
     return userRepository.findByEmail(email).orElse(null);
@@ -83,7 +90,7 @@ public class UserService {
       UserEntity newUser = new UserEntity();
       newUser.setName(userRegistrationDTO.getName());
       newUser.setEmail(userRegistrationDTO.getEmail());
-      newUser.setPassword(userRegistrationDTO.getPassword());
+      newUser.setPassword(passwordEncoder.encode(userRegistrationDTO.getPassword()));
       newUser.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
       userRepository.save(newUser);
       AuthResponseDTO authResponseDTO = new AuthResponseDTO(jwtService.generateToken(newUser.getEmail()));

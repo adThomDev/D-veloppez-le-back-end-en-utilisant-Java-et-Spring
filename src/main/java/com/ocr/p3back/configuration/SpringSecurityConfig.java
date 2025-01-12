@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -20,16 +19,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
+  private final UserDetailsService userDetailsService;
+  private final JwtAuthFilter jwtAuthFilter;
+  private final PasswordEncoder passwordEncoder;
 
   @Autowired
-  private UserDetailsService userDetailsService;
-
-  @Autowired
-  private JwtAuthFilter jwtAuthFilter;
-
-  @Bean
-  public PasswordEncoder getEncoder() {
-    return new BCryptPasswordEncoder();
+  public SpringSecurityConfig(UserDetailsService userDetailsService,
+                              JwtAuthFilter jwtAuthFilter,
+                              PasswordEncoder passwordEncoder) {
+    this.userDetailsService = userDetailsService;
+    this.jwtAuthFilter = jwtAuthFilter;
+    this.passwordEncoder = passwordEncoder;
   }
 
   /**
@@ -72,7 +72,7 @@ public class SpringSecurityConfig {
   private AuthenticationProvider authenticationProvider() {
     final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
     authenticationProvider.setUserDetailsService(userDetailsService);
-    authenticationProvider.setPasswordEncoder(getEncoder());
+    authenticationProvider.setPasswordEncoder(passwordEncoder);
 
     return authenticationProvider;
   }
