@@ -2,14 +2,14 @@
 
 ## Table of Contents
 
-- [Description](#Description)
-- [Technology](#Technology)
-- [Documentation](#Documentation)
-- [Features](#Features)
-- [Installation](#Installation)
-    - [Project installation](#Project installation)
-    - [Database configuration](#Database configuration)
-    - [Database Initialization](#Database Initialization)
+- [Description](#description)
+- [Technology](#technology)
+- [Documentation](#documentation)
+- [Features](#features)
+- [Installation](#installation)
+    - [Project installation](#project-installation)
+    - [Database configuration](#database-configuration)
+    - [Database Initialization](#database-initialization)
 
 ## Description
 
