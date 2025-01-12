@@ -18,14 +18,19 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-  @Value("${jwt.secret.key}")
-  private String secretKey;
-
-  @Value("${jwt.expiration}")
-  private Long expiration;
+  private final UserRepository utilisateurRepository;
+  private final String secretKey;
+  private final Long expiration;
 
   @Autowired
-  private UserRepository utilisateurRepository;
+  public JwtService(UserRepository utilisateurRepository,
+                    @Value("${jwt.secret.key}") String secretKey,
+                    @Value("${jwt.expiration}") Long expiration) {
+    this.utilisateurRepository = utilisateurRepository;
+    this.secretKey = secretKey;
+    this.expiration = expiration;
+  }
+
 
   private SecretKey getKey() {
     return Keys.hmacShaKeyFor(secretKey.getBytes());

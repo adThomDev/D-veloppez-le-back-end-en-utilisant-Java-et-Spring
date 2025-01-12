@@ -23,11 +23,14 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class AuthController {
 
-  @Autowired
-  private AuthService authService;
+  private final AuthService authService;
+  private final UserService userService;
 
   @Autowired
-  private UserService userService;
+  public AuthController(AuthService authService, UserService userService) {
+    this.authService = authService;
+    this.userService = userService;
+  }
 
   /**
    * Checks login details and gives access if they're correct.

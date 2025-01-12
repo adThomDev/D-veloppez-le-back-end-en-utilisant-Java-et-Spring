@@ -21,19 +21,22 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class RentalService {
 
-  @Autowired
-  private RentalRepository rentalRepository;
+  private final RentalRepository rentalRepository;
+  private final UserService userService;
+  private final JwtService jwtService;
 
   @Autowired
-  private UserService userService;
-
-  @Autowired
-  private JwtService jwtService;
+  public RentalService(RentalRepository rentalRepository, UserService userService, JwtService jwtService) {
+    this.rentalRepository = rentalRepository;
+    this.userService = userService;
+    this.jwtService = jwtService;
+  }
 
   private final String picturesUrl = "http://localhost:3001/pictures/";
 
@@ -131,19 +134,21 @@ public class RentalService {
     MultipartFile picture = createRentalDTO.getPicture();
 
     if (picture != null && !picture.isEmpty()) {
-      //TODO check que le nom n'est pas déjas pris
-      String picturePath = "./pictures/" + picture.getOriginalFilename();
+      String originalFilename = picture.getOriginalFilename();
+      String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
+      String picturePath = "./pictures/" + uniqueFilename;
       try {
         Files.write(Paths.get(picturePath), picture.getBytes());
-        rental.setPicture(picture.getOriginalFilename());
+        rental.setPicture(uniqueFilename);
       } catch (IOException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
       }
     }
     saveRental(rental);
 
-    return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Rental created !"));
+    return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("Rental created!"));
   }
+
 
   /**
    * Updates an existing rental.
@@ -169,7 +174,7 @@ public class RentalService {
     Long newSurface = createRentalDTO.getSurface();
     Long newPrice = createRentalDTO.getPrice();
     String newDescription = createRentalDTO.getDescription();
-    Boolean toUpdate = false;
+    boolean toUpdate = false;
 
     if (newName != null && !newName.isEmpty()) {
       rental.setName(newName);

@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 
 @Service
 public class UserService {
+
   private final UserRepository userRepository;
   private final JwtService jwtService;
   private final PasswordEncoder passwordEncoder;

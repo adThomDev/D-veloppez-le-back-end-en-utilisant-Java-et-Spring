@@ -6,7 +6,6 @@ import com.ocr.p3back.model.dto.message.MessageResponse;
 import com.ocr.p3back.model.entity.Message;
 import com.ocr.p3back.model.entity.Rental;
 import com.ocr.p3back.model.entity.UserEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,14 +16,15 @@ import java.time.LocalDateTime;
 @Service
 public class MessageService {
 
-  @Autowired
-  private MessageRepository messageRepository;
+  private final MessageRepository messageRepository;
+  private final RentalService rentalService;
+  private final UserService userService;
 
-  @Autowired
-  private RentalService rentalService;
-
-  @Autowired
-  private UserService userService;
+  public MessageService(MessageRepository messageRepository, RentalService rentalService, UserService userService) {
+    this.messageRepository = messageRepository;
+    this.rentalService = rentalService;
+    this.userService = userService;
+  }
 
   /**
    * Sends a message to a rental's owner.

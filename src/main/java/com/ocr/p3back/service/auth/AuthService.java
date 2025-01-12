@@ -16,17 +16,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
-  @Autowired
-  private UserService userService;
-
-//  @Autowired
-//  private PasswordEncoder passwordEncoder; //TODO
+  private final UserService userService;
+  private final JwtService jwtService;
+  private final AuthenticationManager authenticationManager;
 
   @Autowired
-  private JwtService jwtService;
-
-  @Autowired
-  private AuthenticationManager authenticationManager;
+  public AuthService(UserService userService, JwtService jwtService, AuthenticationManager authenticationManager) {
+    this.userService = userService;
+    this.jwtService = jwtService;
+    this.authenticationManager = authenticationManager;
+  }
 
   /**
    * Verifies login information and provides access or an error message.

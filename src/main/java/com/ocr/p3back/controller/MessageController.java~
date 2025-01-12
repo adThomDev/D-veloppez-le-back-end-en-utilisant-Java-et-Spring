@@ -19,12 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/messages")
 public class MessageController {
 
-  private final MessageService messageService;
-
   @Autowired
-  public MessageController(MessageService messageService) {
-    this.messageService = messageService;
-  }
+  private MessageService messageService;
 
   /**
    * Sends a message to the rental's owner.
