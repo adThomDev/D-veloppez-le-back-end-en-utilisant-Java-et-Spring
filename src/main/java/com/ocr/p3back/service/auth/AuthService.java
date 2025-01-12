@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,8 +19,8 @@ public class AuthService {
   @Autowired
   private UserService userService;
 
-  @Autowired
-  private PasswordEncoder passwordEncoder; //TODO
+//  @Autowired
+//  private PasswordEncoder passwordEncoder; //TODO
 
   @Autowired
   private JwtService jwtService;
@@ -41,13 +40,13 @@ public class AuthService {
           new UsernamePasswordAuthenticationToken(
               authRequestDTO.getEmail(), authRequestDTO.getPassword()));
     } catch (BadCredentialsException e) {
-
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("error"));
     }
+
     UserEntity userEntity = userService.findUserByEmail(authRequestDTO.getEmail());
     AuthResponseDTO authResponseDTO = new AuthResponseDTO(jwtService.generateToken(userEntity.getEmail()));
-    if (userEntity == null || authResponseDTO == null) {
 
+    if (userEntity == null || authResponseDTO == null) {  //TODO
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("error"));
     }
 

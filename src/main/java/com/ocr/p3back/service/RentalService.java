@@ -59,7 +59,6 @@ public class RentalService {
           return rentalDTO;
         })
         .collect(Collectors.toList());
-
     RentalsDTO rentalsDTO = new RentalsDTO(rentalDTOList);
 
     return ResponseEntity.status(HttpStatus.OK).body(rentalsDTO);
@@ -74,8 +73,8 @@ public class RentalService {
    */
   public ResponseEntity<RentalDTO> getRentalDTOById(Long rentalId) {
     Rental rental = rentalRepository.findById(rentalId).orElse(null);
-    if (rental != null) {
 
+    if (rental != null) {
       return ResponseEntity.status(HttpStatus.OK).body(convertToDTO(rental));
     }
 
@@ -138,7 +137,6 @@ public class RentalService {
         Files.write(Paths.get(picturePath), picture.getBytes());
         rental.setPicture(picture.getOriginalFilename());
       } catch (IOException e) {
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
       }
     }
@@ -164,7 +162,6 @@ public class RentalService {
     if (owner == null ||
         rental == null ||
         !rental.getOwner().getId().equals(owner.getId())) {
-
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 

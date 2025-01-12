@@ -29,7 +29,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     UserEntity user = userService.findUserByEmail(username);
 
     if (user != null) {
-
       return new User(username, user.getPassword(), Collections.emptyList());
     } else {
       Exception e = new Exception("User not found");

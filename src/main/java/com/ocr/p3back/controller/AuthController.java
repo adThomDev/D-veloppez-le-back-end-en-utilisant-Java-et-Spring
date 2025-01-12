@@ -57,7 +57,6 @@ public class AuthController {
       )
   )
   public ResponseEntity<?> authenticate(@RequestBody AuthRequestDTO authRequestDTO) {
-
     return authService.authenticate(authRequestDTO);
   }
 
@@ -79,14 +78,13 @@ public class AuthController {
       security = {@SecurityRequirement(name = "bearerAuth")}
   )
   public ResponseEntity<UserDTO> getCurrentUser(HttpServletRequest request) {
-
     return userService.getCurrentUser(request);
   }
 
   /**
    * Registers a new user.
    *
-   * @param userDTORequest The user details for registration encapsulated in a UserDTO object.
+   * @param userRegistrationDTO The user details for registration encapsulated in a UserDTO object.
    * @return A ResponseEntity containing the new user's JWT if successful, or a 400.
    */
   @PostMapping("/register")
@@ -106,8 +104,7 @@ public class AuthController {
           )
       )
   )
-  public ResponseEntity<?> register(@RequestBody UserRegistrationDTO userRegistrationDTO) {
-
+  public ResponseEntity<?> registerUser(@RequestBody UserRegistrationDTO userRegistrationDTO) {
     return userService.createUser(userRegistrationDTO);
   }
 }

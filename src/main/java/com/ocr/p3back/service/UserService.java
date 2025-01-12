@@ -26,12 +26,10 @@ public class UserService {
   private JwtService jwtService;
 
   public UserEntity findUserByEmail(String email) {
-
     return userRepository.findByEmail(email).orElse(null);
   }
 
   public UserEntity findUserById(Long userId) {
-
     return userRepository.findById(userId).orElse(null);
   }
 
@@ -60,11 +58,9 @@ public class UserService {
 
         return ResponseEntity.status(HttpStatus.OK).body(userDTO);
       } else {
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
       }
     } catch (Exception e) {
-
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
   }

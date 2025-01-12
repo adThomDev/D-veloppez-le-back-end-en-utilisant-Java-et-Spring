@@ -52,7 +52,6 @@ public class MessageController {
       )
   )
   public ResponseEntity<MessageResponse> postMessage(@RequestBody MessageRequest messageRequest) {
-
     return messageService.postMessage(messageRequest);
   }
 }

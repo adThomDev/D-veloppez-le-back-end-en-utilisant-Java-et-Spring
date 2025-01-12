@@ -37,8 +37,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
     return request.getRequestURI().equals("/pictures")
-        || request.getRequestURI().equals("/api/auth/login")
-        || request.getRequestURI().equals("/api/auth/register");
+      || request.getRequestURI().equals("/api/auth/login")
+      || request.getRequestURI().equals("/api/auth/register");
   }
 
   /**
@@ -52,29 +52,29 @@ public class JwtAuthFilter extends OncePerRequestFilter {
    */
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
-    final String authHeader = request.getHeader("Authorization");
+    throws ServletException, IOException {
+      final String authHeader = request.getHeader("Authorization");
 
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      filterChain.doFilter(request, response);
+      if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        filterChain.doFilter(request, response);
 
-      return;
-    }
-
-    if (SecurityContextHolder.getContext().getAuthentication() == null) {
-      final String token = authHeader.substring(7);
-      final Claims claims = jwtService.getClaims(token);
-
-      if (claims.getExpiration().after(new Date())) {
-        final String username = claims.getSubject();
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        final UsernamePasswordAuthenticationToken authToken =
-            new UsernamePasswordAuthenticationToken(userDetails, null, Collections.emptyList());
-        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+        return;
       }
-    }
 
-    filterChain.doFilter(request, response);
-  }
+      if (SecurityContextHolder.getContext().getAuthentication() == null) {
+        final String token = authHeader.substring(7);
+        final Claims claims = jwtService.getClaims(token);
+
+        if (claims.getExpiration().after(new Date())) {
+          final String username = claims.getSubject();
+          final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+          final UsernamePasswordAuthenticationToken authToken =
+              new UsernamePasswordAuthenticationToken(userDetails, null, Collections.emptyList());
+          authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+          SecurityContextHolder.getContext().setAuthentication(authToken);
+        }
+      }
+
+      filterChain.doFilter(request, response);
+    }
 }

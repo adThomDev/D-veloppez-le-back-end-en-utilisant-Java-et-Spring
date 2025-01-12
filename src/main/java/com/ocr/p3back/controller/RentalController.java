@@ -46,7 +46,6 @@ public class RentalController {
       @ApiResponse(description = "Unauthorized", responseCode = "401", content = {@Content()})
   }, security = {@SecurityRequirement(name = "bearerAuth")})
   public ResponseEntity<RentalsDTO> getAllRentals() {
-
     return rentalService.getAllRentals();
   }
 
@@ -67,7 +66,6 @@ public class RentalController {
       @ApiResponse(description = "Unauthorized", responseCode = "401", content = {@Content()})
   }, security = {@SecurityRequirement(name = "bearerAuth")})
   public ResponseEntity<RentalDTO> getRentalById(@PathVariable(required = true) Long rentalId) {
-
     return rentalService.getRentalDTOById(rentalId);
   }
 
@@ -100,7 +98,6 @@ public class RentalController {
   public ResponseEntity<MessageResponse> createRental(
       @ModelAttribute CreateRentalDTO createRentalDTO,
       @RequestHeader("Authorization") String authToken) {
-
     return rentalService.createRental(createRentalDTO, authToken);
   }
 
@@ -135,7 +132,6 @@ public class RentalController {
       @PathVariable Long rentalId,
       @ModelAttribute CreateRentalDTO createRentalDTO,
       @RequestHeader("Authorization") String token) {
-
     return rentalService.updateRental(rentalId, createRentalDTO, token);
   }
 }

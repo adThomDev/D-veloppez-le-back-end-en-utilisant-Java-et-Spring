@@ -56,7 +56,6 @@ public class MessageService {
 
       return ResponseEntity.status(HttpStatus.OK).body(messageResponse);
     } catch (Exception e) {
-
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
   }

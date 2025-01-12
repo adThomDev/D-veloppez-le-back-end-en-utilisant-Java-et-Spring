@@ -32,9 +32,15 @@ public class SpringSecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
+  /**
+   * Configures the security filter chain for the application.
+   *
+   * @param httpSecurity The HttpSecurity object to be configured.
+   * @return A configured SecurityFilterChain object.
+   * @throws Exception If there is an error during configuration.
+   */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-
     return httpSecurity
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
@@ -51,9 +57,15 @@ public class SpringSecurityConfig {
         .build();
   }
 
+  /**
+   * Creates and returns an AuthenticationManager bean.
+   *
+   * @param config The AuthenticationConfiguration object used to configure the AuthenticationManager.
+   * @return The configured AuthenticationManager.
+   * @throws Exception If there is an error creating the AuthenticationManager.
+   */
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-
     return config.getAuthenticationManager();
   }
 
@@ -64,5 +76,4 @@ public class SpringSecurityConfig {
 
     return authenticationProvider;
   }
-
 }

@@ -7,6 +7,11 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.security.SecuritySchemes;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class for OpenAPI documentation.
+ * <p>
+ * Sets up the OpenAPI definition and security schemes for the application.
+ */
 @Configuration
 @OpenAPIDefinition(
     info = @Info(title = "p3back - Développez le back-end en utilisant Java et Spring", version = "1.0")
