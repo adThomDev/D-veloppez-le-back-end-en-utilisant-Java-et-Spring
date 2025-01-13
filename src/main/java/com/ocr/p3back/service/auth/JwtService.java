@@ -1,7 +1,5 @@
 package com.ocr.p3back.service.auth;
 
-import com.ocr.p3back.dao.UserRepository;
-import com.ocr.p3back.model.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,19 +16,15 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-  private final UserRepository utilisateurRepository;
   private final String secretKey;
   private final Long expiration;
 
   @Autowired
-  public JwtService(UserRepository utilisateurRepository,
-                    @Value("${jwt.secret.key}") String secretKey,
+  public JwtService(@Value("${jwt.secret.key}") String secretKey,
                     @Value("${jwt.expiration}") Long expiration) {
-    this.utilisateurRepository = utilisateurRepository;
     this.secretKey = secretKey;
     this.expiration = expiration;
   }
-
 
   private SecretKey getKey() {
     return Keys.hmacShaKeyFor(secretKey.getBytes());
@@ -43,8 +37,7 @@ public class JwtService {
    * @return A JWT token as a String, or null if the user is not found.
    */
   public String generateToken(String username) {
-    UserEntity utilisateur = utilisateurRepository.findByEmail(username).orElse(null);
-    Map<String, Object> claims = new HashMap<String, Object>();
+    Map<String, Object> claims = new HashMap<>();
 
     return Jwts.builder()
         .setSubject(username)

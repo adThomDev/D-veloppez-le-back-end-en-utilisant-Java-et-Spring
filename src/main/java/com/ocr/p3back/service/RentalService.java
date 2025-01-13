@@ -43,7 +43,7 @@ public class RentalService {
   /**
    * Retrieves a list of all available rentals.
    *
-   * @return ResponseEntity<RentalsDTO> containing a list of {@link RentalDTO} objects representing all rentals.
+   * @return ResponseEntity<RentalsDTO> containing a list of RentalDTO objects representing all rentals.
    */
   public ResponseEntity<RentalsDTO> getAllRentals() {
     List<Rental> rentals = rentalRepository.findAll();
@@ -71,7 +71,7 @@ public class RentalService {
    * Retrieves a specific rental by its ID.
    *
    * @param rentalId The ID of the rental to retrieve.
-   * @return ResponseEntity<RentalDTO> containing the {@link RentalDTO} if found,
+   * @return ResponseEntity<RentalDTO> containing RentalDTO if found,
    * or a 401 Unauthorized status if not found.
    */
   public ResponseEntity<RentalDTO> getRentalDTOById(Long rentalId) {
@@ -85,10 +85,10 @@ public class RentalService {
   }
 
   /**
-   * Transforms a {@link Rental} object into a {@link RentalDTO} object.
+   * Transforms a Rental object into a RentalDTO object.
    *
-   * @param rental The {@link Rental} object to convert.
-   * @return A {@link RentalDTO} object containing the converted data.
+   * @param rental The Rental object to convert.
+   * @return A RentalDTO object containing the converted data.
    */
   private RentalDTO convertToDTO(Rental rental) {
     RentalDTO rentalDTO = new RentalDTO();
@@ -110,9 +110,9 @@ public class RentalService {
   /**
    * Creates a new rental.
    *
-   * @param createRentalDTO A {@link CreateRentalDTO} object containing the rental details to be created.
+   * @param createRentalDTO contains the rental details to be created.
    * @param authToken       The authentication token of the user creating the rental.
-   * @return ResponseEntity containing a {@link MessageResponse} with a success message upon successful creation,
+   * @return ResponseEntity containing a MessageResponse with a success message upon successful creation,
    * or a 401 Unauthorized status if user is not authorized or an error occurs.
    */
   public ResponseEntity<MessageResponse> createRental(CreateRentalDTO createRentalDTO, String authToken) {
@@ -154,9 +154,9 @@ public class RentalService {
    * Updates an existing rental.
    *
    * @param rentalId        The ID of the rental to update.
-   * @param createRentalDTO A {@link CreateRentalDTO} object containing the updated rental details.
+   * @param createRentalDTO contains the updated rental details.
    * @param token           The authentication token of the user updating the rental.
-   * @return ResponseEntity containing a {@link MessageResponse} with a success message upon successful update,
+   * @return ResponseEntity containing a MessageResponse with a success message upon successful update,
    * or a 401 Unauthorized status if user is not authorized or there's nothing to update.
    */
   public ResponseEntity<MessageResponse> updateRental(Long rentalId, CreateRentalDTO createRentalDTO, String token) {

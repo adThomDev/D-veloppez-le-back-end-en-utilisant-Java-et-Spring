@@ -1,7 +1,5 @@
 package com.ocr.p3back.model.dto.auth;
 
-//TODO check l'utilité
-
 import lombok.Getter;
 
 @Getter

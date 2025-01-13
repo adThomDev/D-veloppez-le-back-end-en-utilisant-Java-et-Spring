@@ -45,7 +45,7 @@ public class AuthService {
     UserEntity userEntity = userService.findUserByEmail(authRequestDTO.getEmail());
     AuthResponseDTO authResponseDTO = new AuthResponseDTO(jwtService.generateToken(userEntity.getEmail()));
 
-    if (userEntity == null || authResponseDTO == null) {  //TODO
+    if (userEntity == null || authResponseDTO == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("error"));
     }
 
