@@ -26,7 +26,14 @@ public class JwtService {
     this.expiration = expiration;
   }
 
+  /**
+   * Generates a SecretKey for signing or verifying JWTs using the HMAC-SHA algorithm.
+   *
+   * @return a SecretKey compatible with HMAC-SHA algorithms
+   * @throws IllegalArgumentException if the secret key is too short for the desired algorithm
+   */
   private SecretKey getKey() {
+
     return Keys.hmacShaKeyFor(secretKey.getBytes());
   }
 

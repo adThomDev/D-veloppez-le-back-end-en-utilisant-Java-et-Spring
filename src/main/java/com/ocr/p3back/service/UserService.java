@@ -101,4 +101,33 @@ public class UserService {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
   }
+  
+  /**
+   * Gets the information for a user by their ID.
+   *
+   * @param id The ID of the user to retrieve.
+   * @return The user's information as a UserDTO, or null if not found or an error occurs.
+   */
+  public UserDTO getUserById(Long id) {
+    try {
+      UserEntity user = findUserById(id);
+
+      if (user != null) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        userDTO.setCreated_at(dateFormat.format(user.getCreatedAt()));
+        userDTO.setUpdated_at(dateFormat.format(user.getUpdatedAt()));
+
+        return userDTO;
+      } else {
+        return null;
+      }
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
 }
